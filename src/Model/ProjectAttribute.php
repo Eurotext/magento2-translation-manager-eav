@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Eurotext\TranslationManagerAttribute\Model;
+namespace Eurotext\TranslationManagerEav\Model;
 
 use Eurotext\TranslationManager\Model\AbstractProjectEntity;
-use Eurotext\TranslationManagerAttribute\Model\ResourceModel\ProjectAttributeCollection;
-use Eurotext\TranslationManagerAttribute\Model\ResourceModel\ProjectAttributeResource;
+use Eurotext\TranslationManagerEav\Model\ResourceModel\ProjectAttributeCollection;
+use Eurotext\TranslationManagerEav\Model\ResourceModel\ProjectAttributeResource;
 
 class ProjectAttribute extends AbstractProjectEntity
 {

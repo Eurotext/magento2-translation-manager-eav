@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Eurotext\TranslationManagerAttribute\Model\ResourceModel;
+namespace Eurotext\TranslationManagerEav\Model\ResourceModel;
 
-use Eurotext\TranslationManagerAttribute\Model\ProjectAttribute;
+use Eurotext\TranslationManagerEav\Model\ProjectAttribute;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class ProjectAttributeCollection extends AbstractCollection

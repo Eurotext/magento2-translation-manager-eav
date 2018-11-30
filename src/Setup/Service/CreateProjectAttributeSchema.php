@@ -6,10 +6,10 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerAttribute\Setup\Service;
+namespace Eurotext\TranslationManagerEav\Setup\Service;
 
 use Eurotext\TranslationManager\Setup\Service\AddEntityTableColumnsInterface;
-use Eurotext\TranslationManagerAttribute\Setup\ProjectAttributeSchema;
+use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
 use Magento\Framework\Setup\SchemaSetupInterface;
 
 class CreateProjectAttributeSchema

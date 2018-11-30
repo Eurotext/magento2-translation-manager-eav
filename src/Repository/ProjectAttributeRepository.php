@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Eurotext\TranslationManagerAttribute\Repository;
+namespace Eurotext\TranslationManagerEav\Repository;
 
 use Eurotext\TranslationManager\Api\Data\ProjectEntityInterface;
-use Eurotext\TranslationManagerAttribute\Api\ProjectAttributeRepositoryInterface;
-use Eurotext\TranslationManagerAttribute\Model\ProjectAttribute;
-use Eurotext\TranslationManagerAttribute\Model\ProjectAttributeFactory;
-use Eurotext\TranslationManagerAttribute\Model\ResourceModel\ProjectAttributeCollectionFactory;
-use Eurotext\TranslationManagerAttribute\Model\ResourceModel\ProjectAttributeResource;
+use Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface;
+use Eurotext\TranslationManagerEav\Model\ProjectAttribute;
+use Eurotext\TranslationManagerEav\Model\ProjectAttributeFactory;
+use Eurotext\TranslationManagerEav\Model\ResourceModel\ProjectAttributeCollectionFactory;
+use Eurotext\TranslationManagerEav\Model\ResourceModel\ProjectAttributeResource;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;

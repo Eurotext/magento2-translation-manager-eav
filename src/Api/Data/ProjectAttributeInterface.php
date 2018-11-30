@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Eurotext\TranslationManagerAttribute\Api\Data;
+namespace Eurotext\TranslationManagerEav\Api\Data;
 
 use Eurotext\TranslationManager\Api\Data\ProjectEntityInterface;
 

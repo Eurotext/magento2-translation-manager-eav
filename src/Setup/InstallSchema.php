@@ -6,9 +6,9 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerAttribute\Setup;
+namespace Eurotext\TranslationManagerEav\Setup;
 
-use Eurotext\TranslationManagerAttribute\Setup\Service\CreateProjectAttributeSchema;
+use Eurotext\TranslationManagerEav\Setup\Service\CreateProjectAttributeSchema;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;

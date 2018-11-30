@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerAttribute\Setup;
+namespace Eurotext\TranslationManagerEav\Setup;
 
 use Eurotext\TranslationManager\Setup\EntitySchema\ProjectEntitySchema;
 

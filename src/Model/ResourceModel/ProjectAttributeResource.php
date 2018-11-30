@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Eurotext\TranslationManagerAttribute\Model\ResourceModel;
+namespace Eurotext\TranslationManagerEav\Model\ResourceModel;
 
-use Eurotext\TranslationManagerAttribute\Setup\ProjectAttributeSchema;
+use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
 
 class ProjectAttributeResource extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
