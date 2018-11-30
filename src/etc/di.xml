@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface"
+                type="Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository" />
+
+    <type name="Eurotext\TranslationManager\Entity\EntityTypePool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Entity\AttributeEntityType</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Seeder\EntitySeederPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Seeder\AttributeSeeder</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
