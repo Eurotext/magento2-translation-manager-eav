@@ -77,12 +77,6 @@ class AttributeSeeder implements EntitySeederInterface
         return $result;
     }
 
-    /**
-     * @param ProjectInterface $project
-     * @param string $entityTypeCode
-     *
-     * @return bool
-     */
     private function seedEntityType(ProjectInterface $project, string $entityTypeCode): bool
     {
         $result = true;
