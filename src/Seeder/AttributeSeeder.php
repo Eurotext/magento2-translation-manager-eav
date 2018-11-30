@@ -14,12 +14,11 @@ use Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface;
 use Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface;
 use Eurotext\TranslationManagerEav\Model\ProjectAttributeFactory;
 use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeInterface;
+use Magento\Eav\Model\Entity\Type as EntityType;
+use Magento\Eav\Model\ResourceModel\Entity\Type\Collection as EntityTypeCollection;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Api\SearchCriteriaInterfaceFactory;
 
 class AttributeSeeder implements EntitySeederInterface
 {
@@ -27,11 +26,6 @@ class AttributeSeeder implements EntitySeederInterface
      * @var AttributeRepositoryInterface
      */
     private $attributeRepository;
-
-    /**
-     * @var SearchCriteriaInterfaceFactory
-     */
-    private $searchCriteriaFactory;
 
     /**
      * @var ProjectAttributeFactory
@@ -48,28 +42,60 @@ class AttributeSeeder implements EntitySeederInterface
      */
     private $searchCriteriaBuilder;
 
+    /**
+     * @var EntityTypeCollection
+     */
+    private $entityTypeCollection;
+
     public function __construct(
+        EntityTypeCollection $entityTypeCollection,
         AttributeRepositoryInterface $attributeRepository,
-        SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         ProjectAttributeFactory $projectAttributeFactory,
         ProjectAttributeRepositoryInterface $projectAttributeRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->attributeRepository        = $attributeRepository;
-        $this->searchCriteriaFactory      = $searchCriteriaFactory;
         $this->projectAttributeFactory    = $projectAttributeFactory;
         $this->projectAttributeRepository = $projectAttributeRepository;
         $this->searchCriteriaBuilder      = $searchCriteriaBuilder;
+        $this->entityTypeCollection       = $entityTypeCollection;
     }
 
     public function seed(ProjectInterface $project): bool
     {
         $result = true;
 
+        $this->entityTypeCollection->load();
+
+        foreach ($this->entityTypeCollection->getItems() as $entityType) {
+            /** @var EntityType $entityType */
+            $entityTypeCode = $entityType->getEntityTypeCode();
+
+            $result = $this->seedEntityType($project, $entityTypeCode);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param ProjectInterface $project
+     * @param string $entityTypeCode
+     *
+     * @return bool
+     */
+    private function seedEntityType(ProjectInterface $project, string $entityTypeCode): bool
+    {
+        $result = true;
+
         // get attribute collection
-        /** @var $searchCriteria SearchCriteriaInterface */
-        $searchCriteria = $this->searchCriteriaFactory->create();
-        $searchResult   = $this->attributeRepository->getList('catalog_product', $searchCriteria);
+        $this->searchCriteriaBuilder->addFilter('is_user_defined', 1);
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        $searchResult = $this->attributeRepository->getList($entityTypeCode, $searchCriteria);
+
+        if ($searchResult->getTotalCount() === 0) {
+            return $result;
+        }
 
         // create project entities
         $attributes = $searchResult->getItems();
