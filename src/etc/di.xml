@@ -19,4 +19,18 @@
         </arguments>
     </type>
 
+    <type name="Eurotext\TranslationManager\Sender\EntitySenderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Sender\AttributeSender</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerEav\Sender\AttributeSender">
+        <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
 </config>
