@@ -115,6 +115,8 @@ class AttributeSeeder implements EntitySeederInterface
             $projectAttribute = $this->projectAttributeFactory->create();
             $projectAttribute->setProjectId($projectId);
             $projectAttribute->setEntityId($entityId);
+            $projectAttribute->setAttributeCode($attribute->getAttributeCode());
+            $projectAttribute->setEavEntityType($entityTypeCode);
             $projectAttribute->setStatus(ProjectAttributeInterface::STATUS_NEW);
 
             try {
