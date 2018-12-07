@@ -71,7 +71,9 @@ class AttributeSeeder implements EntitySeederInterface
             /** @var EntityType $entityType */
             $entityTypeCode = $entityType->getEntityTypeCode();
 
-            $result = $this->seedEntityType($project, $entityTypeCode);
+            $isSeeded = $this->seedEntityType($project, $entityTypeCode);
+
+            $result = !$isSeeded ? false : $result;
         }
 
         return $result;
@@ -99,9 +101,8 @@ class AttributeSeeder implements EntitySeederInterface
             /** @var $attribute AttributeInterface */
             $entityId = (int)$attribute->getAttributeId();
 
-            $this->searchCriteriaBuilder
-                ->addFilter(ProjectAttributeSchema::ENTITY_ID, $entityId)
-                ->addFilter(ProjectAttributeSchema::PROJECT_ID, $projectId);
+            $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::ENTITY_ID, $entityId);
+            $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::PROJECT_ID, $projectId);
             $searchCriteria = $this->searchCriteriaBuilder->create();
 
             $searchResults = $this->projectAttributeRepository->getList($searchCriteria);
