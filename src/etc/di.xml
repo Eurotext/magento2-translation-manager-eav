@@ -27,8 +27,23 @@
         </arguments>
     </type>
 
+    <type name="Eurotext\TranslationManager\Retriever\EntityRetrieverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Retriever\AttributeRetriever</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Eurotext\TranslationManagerEav\Sender\AttributeSender">
         <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerEav\Retriever\AttributeRetriever">
+        <arguments>
+            <!-- @todo to we want a file log per entity or use the global logger -->
             <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
         </arguments>
     </type>
