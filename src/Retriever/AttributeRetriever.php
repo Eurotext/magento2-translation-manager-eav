@@ -126,16 +126,16 @@ class AttributeRetriever implements EntityRetrieverInterface
 
                 $status = ProjectAttributeInterface::STATUS_IMPORTED;
 
-                $this->logger->info(sprintf('attribute id:%s, ext-id:%d => success', $attributeCode, $itemExtId));
+                $this->logger->info(sprintf('attribute %s, ext-id:%d => success', $attributeCode, $itemExtId));
             } catch (GuzzleException $e) {
                 $status    = ProjectAttributeInterface::STATUS_ERROR;
                 $lastError = $e->getMessage();
-                $this->logger->error(sprintf('attribute id:%s => %s', $attributeCode, $lastError));
+                $this->logger->error(sprintf('attribute %s => %s', $attributeCode, $lastError));
                 $result = false;
             } catch (\Exception $e) {
                 $status    = ProjectAttributeInterface::STATUS_ERROR;
                 $lastError = $e->getMessage();
-                $this->logger->error(sprintf('attribute id:%s => %s', $attributeCode, $lastError));
+                $this->logger->error(sprintf('attribute %s => %s', $attributeCode, $lastError));
                 $result = false;
             }
 
