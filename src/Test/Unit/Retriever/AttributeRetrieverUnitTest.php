@@ -30,9 +30,6 @@ class AttributeRetrieverUnitTest extends UnitTestAbstract
     /** @var ProjectMockBuilder */
     private $projectMockBuilder;
 
-    /** @var ProjectAttributeMockBuilder */
-    private $projectAttributeMockBuilder;
-
     /** @var ProjectAttributeRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $projectAttributeRepository;
 
@@ -76,6 +73,7 @@ class AttributeRetrieverUnitTest extends UnitTestAbstract
 
     public function testItShouldRetrieveProjectAttributes()
     {
+        $storeId        = 1;
         $extId          = 2423;
         $attributeCode  = 'some_attribute_code';
         $entityTypeCode = 'catalog_product';
@@ -83,6 +81,7 @@ class AttributeRetrieverUnitTest extends UnitTestAbstract
         $lastError      = '';
 
         $project = $this->projectMockBuilder->buildProjectMock();
+        $project->method('getStoreviewDst')->willReturn($storeId);
 
         $projectAttribute = $this->createMock(ProjectAttributeInterface::class);
         $projectAttribute->expects($this->once())->method('setStatus')->with($status);
@@ -125,12 +124,14 @@ class AttributeRetrieverUnitTest extends UnitTestAbstract
 
     private function runTestExceptionsAreHandledCorrectly(\Exception $apiException)
     {
+        $storeId        = 1;
         $extId          = 2423;
         $attributeCode  = 'some_attribute_code';
         $entityTypeCode = 'catalog_product';
         $status         = ProjectAttributeInterface::STATUS_ERROR;
 
         $project = $this->projectMockBuilder->buildProjectMock();
+        $project->method('getStoreviewDst')->willReturn($storeId);
 
         $projectAttribute = $this->createMock(ProjectAttributeInterface::class);
         $projectAttribute->expects($this->once())->method('setStatus')->with($status);

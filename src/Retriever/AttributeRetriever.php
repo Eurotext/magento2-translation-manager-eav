@@ -20,6 +20,7 @@ use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Mapper\ProductItemGetMapper;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
+use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Psr\Log\LoggerInterface;
@@ -56,20 +57,27 @@ class AttributeRetriever implements EntityRetrieverInterface
      */
     private $attributeItemGetMapper;
 
+    /**
+     * @var AttributeOptionManagementInterface
+     */
+    private $attributeOptionManagement;
+
     public function __construct(
         ItemV1ApiInterface $itemApi,
         ProjectAttributeRepositoryInterface $projectEntityRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AttributeRepositoryInterface $attributeRepository,
+        AttributeOptionManagementInterface $attributeOptionManagement,
         AttributeItemGetMapper $attributeItemGetMapper,
         LoggerInterface $logger
     ) {
-        $this->projectEntityRepository = $projectEntityRepository;
-        $this->searchCriteriaBuilder   = $searchCriteriaBuilder;
-        $this->itemApi                 = $itemApi;
-        $this->attributeRepository     = $attributeRepository;
-        $this->attributeItemGetMapper  = $attributeItemGetMapper;
-        $this->logger                  = $logger;
+        $this->projectEntityRepository   = $projectEntityRepository;
+        $this->searchCriteriaBuilder     = $searchCriteriaBuilder;
+        $this->itemApi                   = $itemApi;
+        $this->attributeRepository       = $attributeRepository;
+        $this->attributeItemGetMapper    = $attributeItemGetMapper;
+        $this->logger                    = $logger;
+        $this->attributeOptionManagement = $attributeOptionManagement;
     }
 
     public function retrieve(ProjectInterface $project): bool
@@ -78,6 +86,7 @@ class AttributeRetriever implements EntityRetrieverInterface
 
         $projectId    = $project->getId();
         $projectExtId = $project->getExtId();
+        $storeId      = $project->getStoreviewDst();
 
         $this->logger->info(sprintf('retrieve project attributes project-id:%d', $projectId));
 
@@ -107,9 +116,13 @@ class AttributeRetriever implements EntityRetrieverInterface
 
                 $itemGetResponse = $this->itemApi->get($itemRequest);
 
-                $this->attributeItemGetMapper->map($itemGetResponse, $attribute);
+                $this->attributeItemGetMapper->map($itemGetResponse, $attribute, $storeId);
 
                 $this->attributeRepository->save($attribute);
+
+                foreach ($attribute->getOptions() as $option) {
+                    $this->attributeOptionManagement->add($entityTypeCode, $attributeCode, $option);
+                }
 
                 $status = ProjectAttributeInterface::STATUS_IMPORTED;
 
