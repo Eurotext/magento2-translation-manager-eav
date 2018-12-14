@@ -43,6 +43,21 @@ class AttributeItemGetMapper
     ): AttributeInterface {
         $item = $itemGetResponse->getItemData();
 
+        $label = (string)$item->getDataValue('label');
+        if (!empty($label)) {
+            $this->mapLabel($attribute, $label, $storeId);
+        }
+
+        $options = $item->getDataValue('options');
+        if (is_array($options) && count($options) > 0) {
+            $this->mapOptions($attribute, $options, $storeId);
+        }
+
+        return $attribute;
+    }
+
+    private function mapLabel(AttributeInterface $attribute, string $label, int $storeId)
+    {
         // Set Attribute translation for Store
         $frontendLabels = $attribute->getFrontendLabels();
 
@@ -50,14 +65,15 @@ class AttributeItemGetMapper
 
         /** @var AttributeFrontendLabelInterface $frontendLabel */
         $frontendLabel = $this->frontendLabelFactory->create();
-        $frontendLabel->setLabel((string)$item->getData('label'));
+        $frontendLabel->setLabel($label);
+        $frontendLabel->setStoreId($storeId);
 
         $frontendLabels[] = $frontendLabel;
         $attribute->setFrontendLabels($frontendLabels);
+    }
 
-        /** @var array $translatedOptions */
-        $translatedOptions = $item->getDataValue('options');
-
+    private function mapOptions(AttributeInterface $attribute, array $translatedOptions, int $storeId)
+    {
         $options = $attribute->getOptions();
 
         foreach ($translatedOptions as $optionValue => $optionLabel) {
@@ -82,8 +98,6 @@ class AttributeItemGetMapper
         }
 
         $attribute->setOptions($options);
-
-        return $attribute;
     }
 
     /**

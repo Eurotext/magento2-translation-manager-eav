@@ -17,6 +17,7 @@ use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface;
 use Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository;
 use Eurotext\TranslationManagerEav\Sender\AttributeSender;
+use Eurotext\TranslationManagerEav\Test\Integration\Provider\AttributeProvider;
 use Eurotext\TranslationManagerEav\Test\Integration\Provider\ProjectAttributeProvider;
 
 class AttributeSenderIntegrationTest extends IntegrationTestAbstract
@@ -100,6 +101,6 @@ class AttributeSenderIntegrationTest extends IntegrationTestAbstract
 
     public static function loadFixture()
     {
-        include __DIR__ . '/../_fixtures/provide_attributes.php';
+        AttributeProvider::createSelctAttributeWithOptions();
     }
 }
