@@ -53,33 +53,11 @@ class AttributeSeederUnitTest extends UnitTestAbstract
 
         $this->projectBuilder = new ProjectMockBuilder($this);
 
-        $this->entityTypeCollection =
-            $this->getMockBuilder(EntityTypeCollection::class)
-                 ->disableOriginalConstructor()
-                 ->setMethods(['load', 'getItems'])
-                 ->getMock();
-
-        $this->attributeRepository =
-            $this->getMockBuilder(AttributeRepositoryInterface::class)
-                 ->setMethods(['getList'])
-                 ->getMockForAbstractClass();
-
-        $this->projectAttributeFactory =
-            $this->getMockBuilder(ProjectAttributeFactory::class)
-                 ->disableOriginalConstructor()
-                 ->setMethods(['create'])
-                 ->getMock();
-
-        $this->projectAttributeRepository =
-            $this->getMockBuilder(ProjectAttributeRepositoryInterface::class)
-                 ->setMethods(['getList', 'save'])
-                 ->getMockForAbstractClass();
-
-        $this->searchCriteriaBuilder =
-            $this->getMockBuilder(SearchCriteriaBuilder::class)
-                 ->disableOriginalConstructor()
-                 ->setMethods(['create', 'addFilter'])
-                 ->getMock();
+        $this->entityTypeCollection       = $this->createMock(EntityTypeCollection::class);
+        $this->attributeRepository        = $this->createMock(AttributeRepositoryInterface::class);
+        $this->projectAttributeFactory    = $this->createMock(ProjectAttributeFactory::class);
+        $this->projectAttributeRepository = $this->createMock(ProjectAttributeRepositoryInterface::class);
+        $this->searchCriteriaBuilder      = $this->createMock(SearchCriteriaBuilder::class);
 
         $this->sut = $this->objectManager->getObject(
             AttributeSeeder::class, [
@@ -98,12 +76,10 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $projectId            = 33;
         $attributesTotalCount = 1;
         $attributeId          = 11;
+        $attributeCode        = 'some-attribute-code';
         $pAttributesCount     = 0;
 
-        $entityType = $this->getMockBuilder(EntityType::class)
-                           ->disableOriginalConstructor()
-                           ->setMethods(['getEntityTypeCode'])
-                           ->getMock();
+        $entityType = $this->createMock(EntityType::class);
         $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
 
         $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
@@ -118,26 +94,27 @@ class AttributeSeederUnitTest extends UnitTestAbstract
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
 
         // Attributes
-        $attribute = $this->getMockBuilder(AttributeInterface::class)->getMock();
+        $attribute = $this->createMock(AttributeInterface::class);
         $attribute->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
+        $attribute->expects($this->once())->method('getAttributeCode')->willReturn($attributeCode);
 
         $attributes = [$attribute];
 
-        $attributeResult = $this->getMockBuilder(AttributeSearchResultsInterface::class)->getMockForAbstractClass();
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
         $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
         $attributeResult->expects($this->once())->method('getItems')->willReturn($attributes);
 
         $this->attributeRepository->expects($this->once())->method('getList')->willReturn($attributeResult);
 
         // Search existing project entity
-        $pAttributesResult = $this->getMockBuilder(SearchResultsInterface::class)->getMockForAbstractClass();
+        $pAttributesResult = $this->createMock(SearchResultsInterface::class);
         $pAttributesResult->expects($this->once())->method('getTotalCount')->willReturn($pAttributesCount);
 
         $this->projectAttributeRepository->expects($this->once())->method('getList')->willReturn($pAttributesResult);
         $this->projectAttributeRepository->expects($this->once())->method('save');
 
         // New project entity
-        $pAttribute = $this->getMockBuilder(ProjectAttributeInterface::class)->getMockForAbstractClass();
+        $pAttribute = $this->createMock(ProjectAttributeInterface::class);
         $pAttribute->expects($this->once())->method('setProjectId')->with($projectId);
         $pAttribute->expects($this->once())->method('setEntityId')->with($attributeId);
         $pAttribute->expects($this->once())->method('setStatus')->with(ProjectAttributeInterface::STATUS_NEW);
@@ -161,10 +138,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $attributeId          = 11;
         $pAttributesCount     = 1;
 
-        $entityType = $this->getMockBuilder(EntityType::class)
-                           ->disableOriginalConstructor()
-                           ->setMethods(['getEntityTypeCode'])
-                           ->getMock();
+        $entityType = $this->createMock(EntityType::class);
         $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
 
         $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
@@ -179,19 +153,20 @@ class AttributeSeederUnitTest extends UnitTestAbstract
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
 
         // Attributes
-        $attribute = $this->getMockBuilder(AttributeInterface::class)->getMock();
+        $attribute = $this->createMock(AttributeInterface::class);
         $attribute->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
+        $attribute->expects($this->never())->method('getAttributeCode');
 
         $attributes = [$attribute];
 
-        $attributeResult = $this->getMockBuilder(AttributeSearchResultsInterface::class)->getMockForAbstractClass();
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
         $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
         $attributeResult->expects($this->once())->method('getItems')->willReturn($attributes);
 
         $this->attributeRepository->expects($this->once())->method('getList')->willReturn($attributeResult);
 
         // Search existing project entity
-        $pAttributesResult = $this->getMockBuilder(SearchResultsInterface::class)->getMockForAbstractClass();
+        $pAttributesResult = $this->createMock(SearchResultsInterface::class);
         $pAttributesResult->expects($this->once())->method('getTotalCount')->willReturn($pAttributesCount);
 
         $this->projectAttributeRepository->expects($this->once())->method('getList')->willReturn($pAttributesResult);
@@ -214,12 +189,10 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $projectId            = 33;
         $attributesTotalCount = 1;
         $attributeId          = 11;
+        $attributeCode        = 'some-attribute-code';
         $pAttributesCount     = 0;
 
-        $entityType = $this->getMockBuilder(EntityType::class)
-                           ->disableOriginalConstructor()
-                           ->setMethods(['getEntityTypeCode'])
-                           ->getMock();
+        $entityType = $this->createMock(EntityType::class);
         $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
 
         $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
@@ -234,26 +207,27 @@ class AttributeSeederUnitTest extends UnitTestAbstract
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
 
         // Attributes
-        $attribute = $this->getMockBuilder(AttributeInterface::class)->getMock();
+        $attribute = $this->createMock(AttributeInterface::class);
         $attribute->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
+        $attribute->expects($this->once())->method('getAttributeCode')->willReturn($attributeCode);
 
         $attributes = [$attribute];
 
-        $attributeResult = $this->getMockBuilder(AttributeSearchResultsInterface::class)->getMockForAbstractClass();
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
         $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
         $attributeResult->expects($this->once())->method('getItems')->willReturn($attributes);
 
         $this->attributeRepository->expects($this->once())->method('getList')->willReturn($attributeResult);
 
         // Search existing project entity
-        $pAttributesResult = $this->getMockBuilder(SearchResultsInterface::class)->getMockForAbstractClass();
+        $pAttributesResult = $this->createMock(SearchResultsInterface::class);
         $pAttributesResult->expects($this->once())->method('getTotalCount')->willReturn($pAttributesCount);
 
         $this->projectAttributeRepository->expects($this->once())->method('getList')->willReturn($pAttributesResult);
         $this->projectAttributeRepository->expects($this->once())->method('save')->willThrowException(new \Exception);
 
         // New project entity
-        $pAttribute = $this->getMockBuilder(ProjectAttributeInterface::class)->getMockForAbstractClass();
+        $pAttribute = $this->createMock(ProjectAttributeInterface::class);
         $pAttribute->expects($this->once())->method('setProjectId')->with($projectId);
         $pAttribute->expects($this->once())->method('setEntityId')->with($attributeId);
         $pAttribute->expects($this->once())->method('setStatus')->with(ProjectAttributeInterface::STATUS_NEW);
@@ -274,10 +248,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
     {
         $attributesTotalCount = 0;
 
-        $entityType = $this->getMockBuilder(EntityType::class)
-                           ->disableOriginalConstructor()
-                           ->setMethods(['getEntityTypeCode'])
-                           ->getMock();
+        $entityType = $this->createMock(EntityType::class);
         $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
 
         $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
@@ -287,7 +258,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $this->searchCriteriaBuilder->expects($this->once())->method('addFilter')->with('is_user_defined', 1);
         $this->searchCriteriaBuilder->expects($this->once())->method('create')->willReturn($attributeSearch);
 
-        $attributeResult = $this->getMockBuilder(AttributeSearchResultsInterface::class)->getMockForAbstractClass();
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
         $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
         $attributeResult->expects($this->never())->method('getItems');
 
