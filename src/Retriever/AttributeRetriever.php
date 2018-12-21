@@ -120,8 +120,11 @@ class AttributeRetriever implements EntityRetrieverInterface
 
                 $this->attributeRepository->save($attribute);
 
-                foreach ($attribute->getOptions() as $option) {
-                    $this->attributeOptionManagement->add($entityTypeCode, $attributeCode, $option);
+                $options = $attribute->getOptions();
+                if (is_array($options)) {
+                    foreach ($options as $option) {
+                        $this->attributeOptionManagement->add($entityTypeCode, $attributeCode, $option);
+                    }
                 }
 
                 $status = ProjectAttributeInterface::STATUS_IMPORTED;
