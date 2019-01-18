@@ -19,6 +19,7 @@ use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Model\Entity\Type as EntityType;
 use Magento\Eav\Model\ResourceModel\Entity\Type\Collection as EntityTypeCollection;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Psr\Log\LoggerInterface;
 
 class AttributeSeeder implements EntitySeederInterface
 {
@@ -47,18 +48,25 @@ class AttributeSeeder implements EntitySeederInterface
      */
     private $entityTypeCollection;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         EntityTypeCollection $entityTypeCollection,
         AttributeRepositoryInterface $attributeRepository,
         ProjectAttributeFactory $projectAttributeFactory,
         ProjectAttributeRepositoryInterface $projectAttributeRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        LoggerInterface $logger
     ) {
         $this->attributeRepository        = $attributeRepository;
         $this->projectAttributeFactory    = $projectAttributeFactory;
         $this->projectAttributeRepository = $projectAttributeRepository;
         $this->searchCriteriaBuilder      = $searchCriteriaBuilder;
         $this->entityTypeCollection       = $entityTypeCollection;
+        $this->logger                     = $logger;
     }
 
     public function seed(ProjectInterface $project, array $entities = []): bool
@@ -93,8 +101,13 @@ class AttributeSeeder implements EntitySeederInterface
         $searchResult = $this->attributeRepository->getList($entityTypeCode, $searchCriteria);
 
         if ($searchResult->getTotalCount() === 0) {
+            // no products found, matching the criteria
+            $this->logger->warning('no matching attributes found');
+
             return $result;
         }
+
+        $entitiesNotFound = array_flip($entities);
 
         // create project entities
         $attributes = $searchResult->getItems();
@@ -102,7 +115,11 @@ class AttributeSeeder implements EntitySeederInterface
         $projectId = $project->getId();
         foreach ($attributes as $attribute) {
             /** @var $attribute AttributeInterface */
-            $entityId = (int)$attribute->getAttributeId();
+            $entityId      = (int)$attribute->getAttributeId();
+            $attributeCode = $attribute->getAttributeCode();
+
+            // Found entity, so remove it from not found list
+            unset($entitiesNotFound[$attributeCode]);
 
             $this->searchCriteriaBuilder
                 ->addFilter(ProjectAttributeSchema::ENTITY_ID, $entityId)
@@ -112,6 +129,8 @@ class AttributeSeeder implements EntitySeederInterface
             $searchResults = $this->projectAttributeRepository->getList($searchCriteria);
 
             if ($searchResults->getTotalCount() >= 1) {
+                // attribute has already been added to project
+                $this->logger->info(sprintf('skipping attribute "%s"(%d) already added', $attributeCode, $entityId));
                 continue;
             }
 
@@ -119,7 +138,7 @@ class AttributeSeeder implements EntitySeederInterface
             $projectAttribute = $this->projectAttributeFactory->create();
             $projectAttribute->setProjectId($projectId);
             $projectAttribute->setEntityId($entityId);
-            $projectAttribute->setAttributeCode($attribute->getAttributeCode());
+            $projectAttribute->setAttributeCode($attributeCode);
             $projectAttribute->setEavEntityType($entityTypeCode);
             $projectAttribute->setStatus(ProjectAttributeInterface::STATUS_NEW);
 
@@ -128,6 +147,14 @@ class AttributeSeeder implements EntitySeederInterface
             } catch (\Exception $e) {
                 $result = false;
             }
+        }
+
+        // Log entites that where not found
+        if (count($entitiesNotFound) > 0) {
+            foreach ($entitiesNotFound as $code => $value) {
+                $this->logger->error(sprintf('attribute-code "%s" not found', $code));
+            }
+
         }
 
         return $result;

@@ -23,6 +23,7 @@ use Magento\Eav\Model\ResourceModel\Entity\Type\Collection as EntityTypeCollecti
 use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchResultsInterface;
+use Psr\Log\LoggerInterface;
 
 class AttributeSeederUnitTest extends UnitTestAbstract
 {
@@ -41,6 +42,9 @@ class AttributeSeederUnitTest extends UnitTestAbstract
     /** @var EntityTypeCollection|\PHPUnit_Framework_MockObject_MockObject */
     private $entityTypeCollection;
 
+    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    private $logger;
+
     /** @var ProjectMockBuilder */
     private $projectBuilder;
 
@@ -58,6 +62,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $this->projectAttributeFactory    = $this->createMock(ProjectAttributeFactory::class);
         $this->projectAttributeRepository = $this->createMock(ProjectAttributeRepositoryInterface::class);
         $this->searchCriteriaBuilder      = $this->createMock(SearchCriteriaBuilder::class);
+        $this->logger                     = $this->createMock(LoggerInterface::class);
 
         $this->sut = $this->objectManager->getObject(
             AttributeSeeder::class, [
@@ -67,6 +72,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
                 'projectAttributeFactory'    => $this->projectAttributeFactory,
                 'projectAttributeRepository' => $this->projectAttributeRepository,
                 'searchCriteriaBuilder'      => $this->searchCriteriaBuilder,
+                'logger'                     => $this->logger,
             ]
         );
     }
@@ -155,7 +161,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         // Attributes
         $attribute = $this->createMock(AttributeInterface::class);
         $attribute->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
-        $attribute->expects($this->never())->method('getAttributeCode');
+        $attribute->method('getAttributeCode');
 
         $attributes = [$attribute];
 
@@ -306,6 +312,70 @@ class AttributeSeederUnitTest extends UnitTestAbstract
 
         $project = $this->projectBuilder->buildProjectMock();
 
+        $result = $this->sut->seed($project, $entities);
+
+        $this->assertTrue($result);
+    }
+
+    public function testItShouldLogNotFoundEntities()
+    {
+        $projectId            = 33;
+        $attributesTotalCount = 1;
+        $attributeId          = 11;
+        $attributeCode        = 'some-attribute-code';
+        $pAttributesCount     = 0;
+        $entities             = [$attributeCode, 'invalid-code'];
+
+        $entityType = $this->createMock(EntityType::class);
+        $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
+
+        $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
+
+        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
+            ['is_user_defined', 1],
+            ['attribute_code', $entities, 'in'],
+            [ProjectAttributeSchema::ENTITY_ID, $attributeId],
+            [ProjectAttributeSchema::PROJECT_ID, $projectId]
+        )->willReturnSelf();
+        $this->searchCriteriaBuilder->expects($this->exactly(2))
+                                    ->method('create')
+                                    ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
+
+        // Attributes
+        $attribute = $this->createMock(AttributeInterface::class);
+        $attribute->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
+        $attribute->expects($this->once())->method('getAttributeCode')->willReturn($attributeCode);
+
+        $attributes = [$attribute];
+
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
+        $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
+        $attributeResult->expects($this->once())->method('getItems')->willReturn($attributes);
+
+        $this->attributeRepository->expects($this->once())->method('getList')->willReturn($attributeResult);
+
+        // Search existing project entity
+        $pAttributesResult = $this->createMock(SearchResultsInterface::class);
+        $pAttributesResult->expects($this->once())->method('getTotalCount')->willReturn($pAttributesCount);
+
+        $this->projectAttributeRepository->expects($this->once())->method('getList')->willReturn($pAttributesResult);
+        $this->projectAttributeRepository->expects($this->once())->method('save');
+
+        // New project entity
+        $pAttribute = $this->createMock(ProjectAttributeInterface::class);
+        $pAttribute->expects($this->once())->method('setProjectId')->with($projectId);
+        $pAttribute->expects($this->once())->method('setEntityId')->with($attributeId);
+        $pAttribute->expects($this->once())->method('setStatus')->with(ProjectAttributeInterface::STATUS_NEW);
+
+        $this->projectAttributeFactory->expects($this->once())->method('create')->willReturn($pAttribute);
+
+        // project mock
+        $project = $this->projectBuilder->buildProjectMock();
+        $project->expects($this->once())->method('getId')->willReturn($projectId);
+
+        $this->logger->expects($this->once())->method('error');
+
+        // TEST
         $result = $this->sut->seed($project, $entities);
 
         $this->assertTrue($result);

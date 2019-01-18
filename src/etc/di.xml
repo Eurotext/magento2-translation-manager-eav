@@ -35,6 +35,12 @@
         </arguments>
     </type>
 
+    <type name="Eurotext\TranslationManagerEav\Seeder\AttributeSeeder">
+        <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
     <type name="Eurotext\TranslationManagerEav\Sender\AttributeSender">
         <arguments>
             <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
