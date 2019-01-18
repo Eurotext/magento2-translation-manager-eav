@@ -3,6 +3,7 @@
     <module name="Eurotext_TranslationManagerEav" setup_version="0.2.0">
         <sequence>
             <module name="Eurotext_TranslationManager" />
+            <module name="Magento_Eav" />
         </sequence>
     </module>
 </config>
