@@ -61,7 +61,7 @@ class AttributeSeeder implements EntitySeederInterface
         $this->entityTypeCollection       = $entityTypeCollection;
     }
 
-    public function seed(ProjectInterface $project): bool
+    public function seed(ProjectInterface $project, array $entities = []): bool
     {
         $result = true;
 
@@ -71,7 +71,7 @@ class AttributeSeeder implements EntitySeederInterface
             /** @var EntityType $entityType */
             $entityTypeCode = $entityType->getEntityTypeCode();
 
-            $isSeeded = $this->seedEntityType($project, $entityTypeCode);
+            $isSeeded = $this->seedEntityType($project, $entityTypeCode, $entities);
 
             $result = !$isSeeded ? false : $result;
         }
@@ -79,12 +79,15 @@ class AttributeSeeder implements EntitySeederInterface
         return $result;
     }
 
-    private function seedEntityType(ProjectInterface $project, string $entityTypeCode): bool
+    private function seedEntityType(ProjectInterface $project, string $entityTypeCode, array $entities = []): bool
     {
         $result = true;
 
         // get attribute collection
         $this->searchCriteriaBuilder->addFilter('is_user_defined', 1);
+        if (count($entities) > 0) {
+            $this->searchCriteriaBuilder->addFilter('attribute_code', $entities, 'in');
+        }
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
         $searchResult = $this->attributeRepository->getList($entityTypeCode, $searchCriteria);
@@ -101,8 +104,9 @@ class AttributeSeeder implements EntitySeederInterface
             /** @var $attribute AttributeInterface */
             $entityId = (int)$attribute->getAttributeId();
 
-            $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::ENTITY_ID, $entityId);
-            $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::PROJECT_ID, $projectId);
+            $this->searchCriteriaBuilder
+                ->addFilter(ProjectAttributeSchema::ENTITY_ID, $entityId)
+                ->addFilter(ProjectAttributeSchema::PROJECT_ID, $projectId);
             $searchCriteria = $this->searchCriteriaBuilder->create();
 
             $searchResults = $this->projectAttributeRepository->getList($searchCriteria);

@@ -88,7 +88,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
             ['is_user_defined', 1],
             [ProjectAttributeSchema::ENTITY_ID, $attributeId],
             [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        );
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -147,7 +147,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
             ['is_user_defined', 1],
             [ProjectAttributeSchema::ENTITY_ID, $attributeId],
             [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        );
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -201,7 +201,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
             ['is_user_defined', 1],
             [ProjectAttributeSchema::ENTITY_ID, $attributeId],
             [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        );
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -255,7 +255,11 @@ class AttributeSeederUnitTest extends UnitTestAbstract
 
         $attributeSearch = new SearchCriteria();
 
-        $this->searchCriteriaBuilder->expects($this->once())->method('addFilter')->with('is_user_defined', 1);
+        $this->searchCriteriaBuilder
+            ->expects($this->once())
+            ->method('addFilter')
+            ->with('is_user_defined', 1)
+            ->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->once())->method('create')->willReturn($attributeSearch);
 
         $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
@@ -267,6 +271,42 @@ class AttributeSeederUnitTest extends UnitTestAbstract
         $project = $this->projectBuilder->buildProjectMock();
 
         $result = $this->sut->seed($project);
+
+        $this->assertTrue($result);
+    }
+
+    public function testItShouldAddEntitiesFilter()
+    {
+        $entity   = 'some-entity';
+        $entities = [$entity];
+
+        $attributesTotalCount = 0;
+
+        $entityType = $this->createMock(EntityType::class);
+        $entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('hans_dampf');
+
+        $this->entityTypeCollection->expects($this->once())->method('getItems')->willReturn([$entityType]);
+
+        $attributeSearch = new SearchCriteria();
+
+        $this->searchCriteriaBuilder
+            ->method('addFilter')
+            ->withConsecutive(
+                ['is_user_defined', 1],
+                ['attribute_code', $entities, 'in']
+            )->willReturnSelf();
+
+        $this->searchCriteriaBuilder->expects($this->once())->method('create')->willReturn($attributeSearch);
+
+        $attributeResult = $this->createMock(AttributeSearchResultsInterface::class);
+        $attributeResult->expects($this->once())->method('getTotalCount')->willReturn($attributesTotalCount);
+        $attributeResult->expects($this->never())->method('getItems');
+
+        $this->attributeRepository->expects($this->once())->method('getList')->willReturn($attributeResult);
+
+        $project = $this->projectBuilder->buildProjectMock();
+
+        $result = $this->sut->seed($project, $entities);
 
         $this->assertTrue($result);
     }
