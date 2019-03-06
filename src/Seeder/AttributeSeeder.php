@@ -102,7 +102,7 @@ class AttributeSeeder implements EntitySeederInterface
 
         if ($searchResult->getTotalCount() === 0) {
             // no products found, matching the criteria
-            $this->logger->warning('no matching attributes found');
+            $this->logger->notice(sprintf('no matching attributes found for entity %s', $entityTypeCode);
 
             return $result;
         }
