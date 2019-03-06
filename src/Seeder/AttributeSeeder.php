@@ -149,6 +149,8 @@ class AttributeSeeder implements EntitySeederInterface
             }
         }
 
+        $this->logger->notice(sprintf('added matching attributes for entity %s', $entityTypeCode);
+
         // Log entites that where not found
         if (count($entitiesNotFound) > 0) {
             foreach ($entitiesNotFound as $code => $value) {
