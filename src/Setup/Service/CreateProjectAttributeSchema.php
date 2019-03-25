@@ -85,7 +85,7 @@ class CreateProjectAttributeSchema
             ProjectAttributeSchema::CREATED_AT,
             DbDdlTable::TYPE_TIMESTAMP,
             null,
-            [],
+            ['default' => DbDdlTable::TIMESTAMP_INIT],
             'Created at'
         );
         $table->addColumn(
