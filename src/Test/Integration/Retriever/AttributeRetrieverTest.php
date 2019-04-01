@@ -16,12 +16,12 @@ use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManager\Test\Integration\Provider\StoreProvider;
+use Eurotext\TranslationManagerEav\Model\ProjectAttribute;
 use Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository;
 use Eurotext\TranslationManagerEav\Retriever\AttributeRetriever;
 use Eurotext\TranslationManagerEav\Sender\AttributeSender;
 use Eurotext\TranslationManagerEav\Test\Integration\Provider\AttributeProvider;
 use Eurotext\TranslationManagerEav\Test\Integration\Provider\ProjectAttributeProvider;
-use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Framework\App\State;
@@ -61,7 +61,7 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
 
         $config = (new ConfigurationMockBuilder($this))->buildConfiguration();
 
-        $itemApi          = new ItemV1Api($config);
+        $itemApi = new ItemV1Api($config);
         $this->projectApi = new ProjectV1Api($config);
 
         $this->sut = $this->objectManager->create(AttributeRetriever::class, ['itemApi' => $itemApi]);
@@ -72,10 +72,10 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
 
         $this->sender = $this->objectManager->create(AttributeSender::class, ['itemApi' => $itemApi]);
 
-        $this->projectProvider            = $this->objectManager->get(ProjectProvider::class);
-        $this->projectAttributeProvider   = $this->objectManager->get(ProjectAttributeProvider::class);
+        $this->projectProvider = $this->objectManager->get(ProjectProvider::class);
+        $this->projectAttributeProvider = $this->objectManager->get(ProjectAttributeProvider::class);
         $this->projectAttributeRepository = $this->objectManager->get(ProjectAttributeRepository::class);
-        $this->attributeRepository        = $this->objectManager->get(AttributeRepositoryInterface::class);
+        $this->attributeRepository = $this->objectManager->get(AttributeRepositoryInterface::class);
     }
 
     /**
@@ -97,8 +97,8 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
      */
     public function testItShouldRetrieveProjectAttributes()
     {
-        $productId     = 10;
-        $name          = __CLASS__ . '-attribute-retriever';
+        $productId = 10;
+        $name = __CLASS__ . '-attribute-retriever';
         $attributeCode = 'etm_integration_tests_1';
         $eavEntityType = 'catalog_product';
 
@@ -111,7 +111,7 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
         $project->setStoreviewDst(self::$storeId);
 
         // An Project Entity Attribute
-        $projectAttribute   = $this->projectAttributeProvider->createProjectAttribute(
+        $projectAttribute = $this->projectAttributeProvider->createProjectAttribute(
             $project->getId(), $productId, $attributeCode, $eavEntityType
         );
         $projectAttributeId = $projectAttribute->getId();
@@ -143,7 +143,7 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
         // Validate the project entity attribute and check status
         $projectEntity = $this->projectAttributeRepository->getById($projectAttributeId);
         $this->assertGreaterThan(0, $projectEntity->getExtId());
-        $this->assertEquals(ProjectProduct::STATUS_IMPORTED, $projectEntity->getStatus());
+        $this->assertEquals(ProjectAttribute::STATUS_IMPORTED, $projectEntity->getStatus());
 
         // Get the attribute and validate its values
         $attribute = $this->attributeRepository->get($eavEntityType, $attributeCode);
@@ -176,7 +176,7 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
 
     private function initExpectedLabels(string $eavEntityType, string $attributeCode): array
     {
-        $attribute   = $this->attributeRepository->get($eavEntityType, $attributeCode);
+        $attribute = $this->attributeRepository->get($eavEntityType, $attributeCode);
         $origOptions = $attribute->getOptions();
 
         $expectedLabels = [];

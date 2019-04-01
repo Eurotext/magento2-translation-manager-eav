@@ -12,7 +12,7 @@ use Eurotext\RestApiClient\Request\Project\ItemPostRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\ScopeConfigReaderInterface;
 use Eurotext\TranslationManagerEav\Mapper\AttributeItemPostMapper;
-use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
+use Eurotext\TranslationManagerEav\Test\Unit\UnitTestAbstract;
 use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 
@@ -44,13 +44,13 @@ class AttributeItemPostMapperUnitTest extends UnitTestAbstract
 
         $storeViewSrc = 1;
         $storeViewDst = 2;
-        $langSrc      = 'de_DE';
-        $langDst      = 'en_US';
+        $langSrc = 'de_DE';
+        $langDst = 'en_US';
 
-        $label         = 'some-frontend-label';
+        $label = 'some-frontend-label';
         $attributeCode = 'some_attribute_code';
-        $entityId      = 47;
-        $entityTypeId  = 11;
+        $entityId = 47;
+        $entityTypeId = 11;
 
         $optionValue = 'option-value-1';
         $optionLabel = 'Option Label 1';

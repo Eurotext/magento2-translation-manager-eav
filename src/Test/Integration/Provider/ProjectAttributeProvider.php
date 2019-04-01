@@ -11,7 +11,6 @@ namespace Eurotext\TranslationManagerEav\Test\Integration\Provider;
 use Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface;
 use Eurotext\TranslationManagerEav\Model\ProjectAttribute;
 use Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository;
-use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class ProjectAttributeProvider
@@ -45,7 +44,7 @@ class ProjectAttributeProvider
         int $productId,
         string $attributeCode,
         string $eavEntityType = 'catalog_product',
-        string $status = ProjectProduct::STATUS_NEW
+        string $status = ProjectAttribute::STATUS_NEW
     ): ProjectAttributeInterface {
         /** @var ProjectAttribute $object */
         $object = $this->objectManager->create(ProjectAttribute::class);

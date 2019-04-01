@@ -10,7 +10,7 @@ namespace Eurotext\TranslationManagerEav\Test\Unit\Mapper;
 
 use Eurotext\RestApiClient\Response\Project\ItemGetResponse;
 use Eurotext\TranslationManagerEav\Mapper\AttributeItemGetMapper;
-use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
+use Eurotext\TranslationManagerEav\Test\Unit\UnitTestAbstract;
 use Magento\Eav\Api\Data\AttributeFrontendLabelInterface;
 use Magento\Eav\Api\Data\AttributeFrontendLabelInterfaceFactory;
 use Magento\Eav\Api\Data\AttributeInterface;
@@ -34,13 +34,13 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
         parent::setUp();
 
         $this->frontendLabelFactory = $this->createMock(AttributeFrontendLabelInterfaceFactory::class);
-        $this->optionLabelFactory   = $this->createMock(AttributeOptionLabelInterfaceFactory::class);
+        $this->optionLabelFactory = $this->createMock(AttributeOptionLabelInterfaceFactory::class);
 
         $this->sut = $this->objectManager->getObject(
             AttributeItemGetMapper::class,
             [
                 'frontendLabelFactory' => $this->frontendLabelFactory,
-                'optionLabelFactory'   => $this->optionLabelFactory,
+                'optionLabelFactory' => $this->optionLabelFactory,
             ]
         );
     }
@@ -48,9 +48,9 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
     public function testMap()
     {
         $storeViewDst = 2;
-        $label        = 'some-frontend-label';
-        $optionValue  = '111';
-        $optionLabel  = 'Option Label 1';
+        $label = 'some-frontend-label';
+        $optionValue = '111';
+        $optionLabel = 'Option Label 1';
 
         $attributeLabel = $this->createMock(AttributeFrontendLabelInterface::class);
         $attributeLabel->expects($this->once())->method('setLabel')->with($label);
@@ -83,11 +83,11 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
         $itemGetResponse = new ItemGetResponse();
         $itemGetResponse->setData(
             [
-                '__meta'  => [],
-                'label'   => $label,
+                '__meta' => [],
+                'label' => $label,
                 'options' => [
                     $optionValue => $optionLabel,
-                    '222'        => 'Option no longer exists in Magento Database',
+                    '222' => 'Option no longer exists in Magento Database',
                 ],
             ]
         );

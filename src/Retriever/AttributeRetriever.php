@@ -16,9 +16,6 @@ use Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface;
 use Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface;
 use Eurotext\TranslationManagerEav\Mapper\AttributeItemGetMapper;
 use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
-use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
-use Eurotext\TranslationManagerProduct\Mapper\ProductItemGetMapper;
-use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\Eav\Api\AttributeRepositoryInterface;
@@ -28,7 +25,7 @@ use Psr\Log\LoggerInterface;
 class AttributeRetriever implements EntityRetrieverInterface
 {
     /**
-     * @var ProjectProductRepositoryInterface
+     * @var ProjectAttributeRepositoryInterface
      */
     private $projectEntityRepository;
 
@@ -53,7 +50,7 @@ class AttributeRetriever implements EntityRetrieverInterface
     private $logger;
 
     /**
-     * @var ProductItemGetMapper
+     * @var AttributeItemGetMapper
      */
     private $attributeItemGetMapper;
 
@@ -71,12 +68,12 @@ class AttributeRetriever implements EntityRetrieverInterface
         AttributeItemGetMapper $attributeItemGetMapper,
         LoggerInterface $logger
     ) {
-        $this->projectEntityRepository   = $projectEntityRepository;
-        $this->searchCriteriaBuilder     = $searchCriteriaBuilder;
-        $this->itemApi                   = $itemApi;
-        $this->attributeRepository       = $attributeRepository;
-        $this->attributeItemGetMapper    = $attributeItemGetMapper;
-        $this->logger                    = $logger;
+        $this->projectEntityRepository = $projectEntityRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->itemApi = $itemApi;
+        $this->attributeRepository = $attributeRepository;
+        $this->attributeItemGetMapper = $attributeItemGetMapper;
+        $this->logger = $logger;
         $this->attributeOptionManagement = $attributeOptionManagement;
     }
 
@@ -84,14 +81,14 @@ class AttributeRetriever implements EntityRetrieverInterface
     {
         $result = true;
 
-        $projectId    = $project->getId();
+        $projectId = $project->getId();
         $projectExtId = $project->getExtId();
-        $storeId      = $project->getStoreviewDst();
+        $storeId = $project->getStoreviewDst();
 
         $this->logger->info(sprintf('retrieve project attributes project-id:%d', $projectId));
 
-        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
-        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0, 'gt');
+        $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::PROJECT_ID, $projectId);
+        $this->searchCriteriaBuilder->addFilter(ProjectAttributeSchema::EXT_ID, 0, 'gt');
         $this->searchCriteriaBuilder->addFilter(
             ProjectAttributeSchema::STATUS, ProjectAttributeInterface::STATUS_EXPORTED
         );
@@ -105,9 +102,9 @@ class AttributeRetriever implements EntityRetrieverInterface
             /** @var $projectEntity ProjectAttributeInterface */
             $lastError = '';
 
-            $itemExtId      = $projectEntity->getExtId();
+            $itemExtId = $projectEntity->getExtId();
             $entityTypeCode = $projectEntity->getEavEntityType();
-            $attributeCode  = $projectEntity->getAttributeCode();
+            $attributeCode = $projectEntity->getAttributeCode();
 
             try {
                 $attribute = $this->attributeRepository->get($entityTypeCode, $attributeCode);
@@ -131,12 +128,12 @@ class AttributeRetriever implements EntityRetrieverInterface
 
                 $this->logger->info(sprintf('attribute %s, ext-id:%d => success', $attributeCode, $itemExtId));
             } catch (GuzzleException $e) {
-                $status    = ProjectAttributeInterface::STATUS_ERROR;
+                $status = ProjectAttributeInterface::STATUS_ERROR;
                 $lastError = $e->getMessage();
                 $this->logger->error(sprintf('attribute %s => %s', $attributeCode, $lastError));
                 $result = false;
             } catch (\Exception $e) {
-                $status    = ProjectAttributeInterface::STATUS_ERROR;
+                $status = ProjectAttributeInterface::STATUS_ERROR;
                 $lastError = $e->getMessage();
                 $this->logger->error(sprintf('attribute %s => %s', $attributeCode, $lastError));
                 $result = false;
