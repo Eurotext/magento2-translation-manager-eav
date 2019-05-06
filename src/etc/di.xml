@@ -5,6 +5,7 @@
     <preference for="Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface"
                 type="Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository" />
 
+    <!-- Entity Pools -->
     <type name="Eurotext\TranslationManager\Entity\EntityTypePool">
         <arguments>
             <argument name="items" xsi:type="array">
@@ -37,6 +38,7 @@
         </arguments>
     </type>
 
+    <!-- Inject Logger -->
     <type name="Eurotext\TranslationManagerEav\Seeder\AttributeSeeder">
         <arguments>
             <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
@@ -51,8 +53,23 @@
 
     <type name="Eurotext\TranslationManagerEav\Retriever\AttributeRetriever">
         <arguments>
-            <!-- @todo to we want a file log per entity or use the global logger -->
             <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Admin UI save and load -->
+    <type name="Eurotext\TranslationManager\Entity\EntityDataLoaderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Ui\EntityDataLoader\AttributeEntityDataLoader</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Eurotext\TranslationManager\Entity\EntityDataSaverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Repository\AttributeEntityDataSaver</item>
+            </argument>
         </arguments>
     </type>
 
