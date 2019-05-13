@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface"
+                type="Eurotext\TranslationManagerEav\Model\ProjectAttribute" />
+    <preference for="Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface"
+                type="Eurotext\TranslationManagerEav\Repository\ProjectAttributeRepository" />
+
+    <!-- Entity Pools -->
+    <type name="Eurotext\TranslationManager\Entity\EntityTypePool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Entity\AttributeEntityType</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntitySeederPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Seeder\AttributeSeeder</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntitySenderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Sender\AttributeSender</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityRetrieverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Retriever\AttributeRetriever</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Inject Logger -->
+    <type name="Eurotext\TranslationManagerEav\Seeder\AttributeSeeder">
+        <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerEav\Sender\AttributeSender">
+        <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerEav\Retriever\AttributeRetriever">
+        <arguments>
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Admin UI save and load -->
+    <type name="Eurotext\TranslationManager\Entity\EntityDataLoaderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Ui\EntityDataLoader\AttributeEntityDataLoader</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Eurotext\TranslationManager\Entity\EntityDataSaverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="attribute" xsi:type="object">Eurotext\TranslationManagerEav\Repository\AttributeEntityDataSaver</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
