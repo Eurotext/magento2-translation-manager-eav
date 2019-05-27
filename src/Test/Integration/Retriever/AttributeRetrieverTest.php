@@ -127,6 +127,8 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
         // trigger translation progress
         $this->projectApi->translate(new ProjectTranslateRequest($project->getExtId()));
 
+        sleep(3); // Sleep to let some time pass so the api has time to process the request
+
         try {
             // Set The area code otherwise image resizing will fail
             /** @var State $appState */
