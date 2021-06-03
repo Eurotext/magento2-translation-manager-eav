@@ -24,7 +24,7 @@ class AttributeItemPostMapperUnitTest extends UnitTestAbstract
     /** @var AttributeItemPostMapper */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

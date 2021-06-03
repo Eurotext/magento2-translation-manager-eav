@@ -29,7 +29,7 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
     /** @var AttributeItemGetMapper */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

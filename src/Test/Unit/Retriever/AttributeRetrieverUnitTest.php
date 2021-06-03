@@ -50,7 +50,7 @@ class AttributeRetrieverUnitTest extends UnitTestAbstract
     /** @var ItemV1ApiInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $itemApi;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
