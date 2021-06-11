@@ -118,11 +118,11 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
 
         // Create project at Eurotext
         $resultProjectCreate = $this->createProject->execute($project);
-        $this->assertTrue($resultProjectCreate);
+        $this->assertTrue($resultProjectCreate, 'Project created');
 
         // Send Project Attributes to Eurotext
         $resultSend = $this->sender->send($project);
-        $this->assertTrue($resultSend);
+        $this->assertTrue($resultSend,'Project attributes sent');
 
         // trigger translation progress
         $this->projectApi->translate(new ProjectTranslateRequest($project->getExtId()));
@@ -140,7 +140,7 @@ class AttributeRetrieverTest extends IntegrationTestAbstract
         // Retrieve Project from Eurotext
         $result = $this->sut->retrieve($project);
 
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'Project retrieved');
 
         // Validate the project entity attribute and check status
         $projectEntity = $this->projectAttributeRepository->getById($projectAttributeId);
