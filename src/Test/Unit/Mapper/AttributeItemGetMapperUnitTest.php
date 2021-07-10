@@ -17,14 +17,21 @@ use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Eav\Api\Data\AttributeOptionLabelInterface;
 use Magento\Eav\Api\Data\AttributeOptionLabelInterfaceFactory;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class AttributeItemGetMapperUnitTest extends UnitTestAbstract
 {
-    /** @var AttributeOptionLabelInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var AttributeOptionLabelInterfaceFactory|MockObject */
     private $optionLabelFactory;
-
-    /** @var AttributeFrontendLabelInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var AttributeFrontendLabelInterfaceFactory|MockObject */
     private $frontendLabelFactory;
+    /** @var StoreManagerInterface|MockObject */
+    private $storeManager;
+
+    /** @var StoreInterface|MockObject */
+    private $store;
 
     /** @var AttributeItemGetMapper */
     private $sut;
@@ -36,11 +43,17 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
         $this->frontendLabelFactory = $this->createMock(AttributeFrontendLabelInterfaceFactory::class);
         $this->optionLabelFactory = $this->createMock(AttributeOptionLabelInterfaceFactory::class);
 
+        $this->store = $this->createMock(StoreInterface::class);
+
+        $this->storeManager = $this->createMock(StoreManagerInterface::class);
+        $this->storeManager->expects($this->once())->method('getStore')->willReturn($this->store);
+
         $this->sut = $this->objectManager->getObject(
             AttributeItemGetMapper::class,
             [
                 'frontendLabelFactory' => $this->frontendLabelFactory,
                 'optionLabelFactory' => $this->optionLabelFactory,
+                'storeManager' => $this->storeManager,
             ]
         );
     }
@@ -51,6 +64,11 @@ class AttributeItemGetMapperUnitTest extends UnitTestAbstract
         $label = 'some-frontend-label';
         $optionValue = '111';
         $optionLabel = 'Option Label 1';
+        $storeId = 4711;
+
+        $this->store->expects($this->once())->method('getId')->willReturn($storeId);
+        $this->storeManager->expects($this->exactly(2))->method('setCurrentStore')
+                           ->withConsecutive(...[[0], [$storeId]]);
 
         $attributeLabel = $this->createMock(AttributeFrontendLabelInterface::class);
         $attributeLabel->expects($this->once())->method('setLabel')->with($label);
