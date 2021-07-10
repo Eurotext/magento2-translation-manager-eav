@@ -29,7 +29,7 @@ class CleanProjectAttributesUnitTest extends UnitTestAbstract
     /** @var SearchCriteriaBuilder|MockObject */
     private $searchCriteriaBuilder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

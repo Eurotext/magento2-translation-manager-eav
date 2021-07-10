@@ -17,7 +17,7 @@ use Eurotext\TranslationManagerEav\Api\ProjectAttributeRepositoryInterface;
 use Eurotext\TranslationManagerEav\Mapper\AttributeItemGetMapper;
 use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
 use GuzzleHttp\Exception\GuzzleException;
-use Magento\Eav\Api\AttributeOptionManagementInterface;
+use Magento\Eav\Api\AttributeOptionUpdateInterface;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Psr\Log\LoggerInterface;
@@ -55,16 +55,16 @@ class AttributeRetriever implements EntityRetrieverInterface
     private $attributeItemGetMapper;
 
     /**
-     * @var AttributeOptionManagementInterface
+     * @var AttributeOptionUpdateInterface
      */
-    private $attributeOptionManagement;
+    private $attributeOptionUpdate;
 
     public function __construct(
         ItemV1ApiInterface $itemApi,
         ProjectAttributeRepositoryInterface $projectEntityRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AttributeRepositoryInterface $attributeRepository,
-        AttributeOptionManagementInterface $attributeOptionManagement,
+        AttributeOptionUpdateInterface $attributeOptionUpdate,
         AttributeItemGetMapper $attributeItemGetMapper,
         LoggerInterface $logger
     ) {
@@ -74,7 +74,7 @@ class AttributeRetriever implements EntityRetrieverInterface
         $this->attributeRepository = $attributeRepository;
         $this->attributeItemGetMapper = $attributeItemGetMapper;
         $this->logger = $logger;
-        $this->attributeOptionManagement = $attributeOptionManagement;
+        $this->attributeOptionUpdate = $attributeOptionUpdate;
     }
 
     public function retrieve(ProjectInterface $project): bool
@@ -120,7 +120,13 @@ class AttributeRetriever implements EntityRetrieverInterface
                 $options = $attribute->getOptions();
                 if (is_array($options)) {
                     foreach ($options as $option) {
-                        $this->attributeOptionManagement->add($entityTypeCode, $attributeCode, $option);
+                        $label = trim($option->getLabel() ?: '');
+                        if (empty($label)) {
+                            continue;
+                        }
+                        $optionId = (int)$option->getValue();
+
+                        $this->attributeOptionUpdate->update($entityTypeCode, $attributeCode, $optionId, $option);
                     }
                 }
 

@@ -27,7 +27,7 @@ class AttributeEntityDataSaverTest extends UnitTestAbstract
     /** @var AttributeSeeder|MockObject */
     private $entitySeeder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

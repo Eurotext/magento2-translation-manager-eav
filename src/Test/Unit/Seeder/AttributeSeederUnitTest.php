@@ -51,7 +51,7 @@ class AttributeSeederUnitTest extends UnitTestAbstract
     /** @var AttributeSeeder */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
